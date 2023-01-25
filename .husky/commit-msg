@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+
+msg=$(cat $1)
+emojis='{"init":"🎉","feat":"✨","package":"📦️","config":"🔧","format":"🎨","style":"💄","tests":"✅","docs":"📝","chore":"🚧","fix":"🐛","hotfix","🚑️","performance":"⚡️","refactor":"♻️","revert":"⏪️","merge":"🔀","deploy":"🚀","release":"🔖"}'
+msg_re="^(init|feat|package|config|format|style|tests|docs|chore|fix|hotfix|performance|refactor|revert|merge|deploy|release): .{1,100}"
+emoji_re="^(🎉|✨|📦️|🔧|🎨|💄|✅|📝|🚧|🐛|🚑️|⚡️|♻️|⏪️|🔀|🚀|🔖) .{1,100}"
+
+if [[ $msg =~ $msg_re ]] || [[ $msg =~ $emoji_re ]];then
+  num=$(git status | grep -E 'modified|deleted|new file|renamed' | wc -l | awk '{print $1}')
+  prefix=${msg%:*};
+  submsg=${msg#*:};
+  emoji=`echo $emojis |grep -Po ${prefix}'[": "]+\K[^"]+'`
+
+  echo -e "debug commit message: [${msg}], [${emoji%,*}${submsg}]"
+  if [ -z "$emoji" ];then
+      commit_msg=${msg};
+  else
+      commit_msg=${emoji%,*}${submsg};
+  fi
+    echo "$commit_msg" > "$1"
+
+else
+    echo -e "Invalid 'commit' message format, eg: chore: <message> or 🚧 <message>
+💡 commit prefixes: init|feat|package|config|format|style|tests|docs|chore|fix|hotfix|performance|refactor|revert|merge|deploy|release
+💡 emoji  prefixes: 🎉|✨|📦️|🔧|🎨|💄|✅|📝|🚧|🐛|🚑️|⚡️|♻️|⏪️|🔀|🚀|🔖" 
+    exit 1
+fi
+
+
+
