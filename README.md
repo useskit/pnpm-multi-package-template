@@ -28,7 +28,6 @@
 | merge       | 🔀    | Merge branches.                           |
 | deploy      | 🚀    | Deploy stuff.                             |
 | release     | 🔖    | Release / Version tags.                   |
-|             |       |
 
 ### 🤝 Contributing
 
